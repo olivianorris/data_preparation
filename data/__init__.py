@@ -92,7 +92,7 @@ class CustomDatasetDataLoader():
             self.dataloader = torch.utils.data.DataLoader(
                 self.dataset,
                 batch_size=opt.batch_size,
-                shuffle=False#New20
+                shuffle=False,#New20
                 num_workers=int(opt.num_threads),
                 drop_last=False#New20
             )

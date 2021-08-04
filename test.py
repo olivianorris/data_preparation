@@ -57,7 +57,7 @@ def main(rank, train_opt, test_opt, name='examples'):
     model.device = device
     model.parallelize()
     model.eval()
-    visualizer = MyVisualizer(opt)
+    #visualizer = MyVisualizer(opt)
 
     #im_path, lm_path = get_data_path(name)
     #lm3d_std = load_lm3d(opt.bfm_folder) 
@@ -163,13 +163,13 @@ def data_summary():
         with open(os.path.join(save_path, save_name + 'masks.txt'), 'w') as fd:
             fd.writelines([i + '\n' for i in msks_list])   
     
-        with open(os.path.join(save_path, save_name + 'gt_features.txt'), 'w') as fd:
+        with open(os.path.join(save_path, save_name + 'gt_feat.txt'), 'w') as fd:
             fd.writelines([i + '\n' for i in gt_feat_list])   
         
-        with open(os.path.join(save_path, save_name + 'avgpools.txt'), 'w') as fd:
+        with open(os.path.join(save_path, save_name + 'avgpool.txt'), 'w') as fd:
             fd.writelines([i + '\n' for i in avgpool_list])
     
-        with open(os.path.join(save_path, save_name + 'coeffs.txt'), 'w') as fd:
+        with open(os.path.join(save_path, save_name + 'coeff.txt'), 'w') as fd:
             fd.writelines([i + '\n' for i in coeff_list])
 
 
@@ -177,4 +177,4 @@ if __name__ == '__main__':
     train_opt = TrainOptions().parse() #New1
     test_opt = TestOptions().parse()  # get test options
     main(0, train_opt, test_opt, train_opt.img_folder) #New?
-    
+    data_summary()
