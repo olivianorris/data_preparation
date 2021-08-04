@@ -104,14 +104,73 @@ def main(rank, train_opt, test_opt, name='examples'):
             print("\n@ image has been processed".replace("@",train_opt.batch_size*i))
             print("\nelapsed time from start: @".replace("@",spent_time_amout))
 
-def data_summery():
+def data_summary():
     masks_path = 'datalist/train/masks.txt'
     imlist = []
     with open(masks_path, 'r') as rf:
         for line in rf.readlines():
             impath = line.strip()
             imlist.append(impath)
+    msk_paths = [os.path.join("./", i) for i in imlist]
+    img_path = [msk_path.replace('mask/', '') for msk_path in msk_paths]
+    lm_path = ['.'.join(msk_path.replace('mask', 'landmarks').split('.')[:-1]) + '.txt' for msk_path in msk_paths]
+    gt_feat_path = [t.replace('landmarks','gt_feat') for t in lm_path]
+    avgpool_path = [t.replace('landmarks','avgpool') for t in lm_path]
+    coeff_path = [t.replace('landmarks','coeff_feat') for t in lm_path]
 
+    lms_list, imgs_list, msks_list, gt_feat_list, avgpool_list,\
+         coeff_list = check_list(msk_paths, img_path, lm_path, gt_feat_path, avgpool_path, coeff_path)
+    
+    write_list(lms_list, imgs_list, msks_list, gt_feat_list, 
+    avgpool_list, coeff_list, mode='train', save_folder='datalist', save_name='')
+    
+    # check if the path is valid
+    def check_list(rmsks_list, rimgs_list, rlms_list, rgt_feat_list, ravgpool_list, rcoeff_list):
+        lms_list, imgs_list, msks_list, gt_feat_list, avgpool_list, coeff_list = [], [], [], [], [], []
+        for i in range(len(rlms_list)):
+            flag = 'false'
+            lm_path = rlms_list[i]
+            im_path = rimgs_list[i]
+            msk_path = rmsks_list[i]
+            gt_feat_path = rgt_feat_list[i]
+            avgpool_path = ravgpool_list[i]
+            coeff_path = rcoeff_list[i]
+            
+            if os.path.isfile(lm_path) and os.path.isfile(im_path) and os.path.isfile(msk_path) \
+                and os.path.isfile(gt_feat_path) and os.path.isfile(avgpool_path) and os.path.isfile(coeff_path):
+                flag = 'true'
+                lms_list.append(rlms_list[i])
+                imgs_list.append(rimgs_list[i])
+                msks_list.append(rmsks_list[i])
+                gt_feat_list.append(rgt_feat_list[i])
+                avgpool_list.append(ravgpool_list[i])
+                coeff_list.append(rcoeff_list[i])
+            print(i, rlms_list[i], flag)
+        return lms_list, imgs_list, msks_list, gt_feat_list, avgpool_list, coeff_list
+
+    def write_list(lms_list, imgs_list, msks_list, gt_feat_list, 
+    avgpool_list, coeff_list, mode='train',save_folder='datalist', save_name=''
+    ):
+        save_path = os.path.join(save_folder, mode)
+        if not os.path.isdir(save_path):
+            os.makedirs(save_path)
+        with open(os.path.join(save_path, save_name + 'landmarks.txt'), 'w') as fd:
+            fd.writelines([i + '\n' for i in lms_list])
+    
+        with open(os.path.join(save_path, save_name + 'images.txt'), 'w') as fd:
+            fd.writelines([i + '\n' for i in imgs_list])
+        
+        with open(os.path.join(save_path, save_name + 'masks.txt'), 'w') as fd:
+            fd.writelines([i + '\n' for i in msks_list])   
+    
+        with open(os.path.join(save_path, save_name + 'gt_features.txt'), 'w') as fd:
+            fd.writelines([i + '\n' for i in gt_feat_list])   
+        
+        with open(os.path.join(save_path, save_name + 'avgpools.txt'), 'w') as fd:
+            fd.writelines([i + '\n' for i in avgpool_list])
+    
+        with open(os.path.join(save_path, save_name + 'coeffs.txt'), 'w') as fd:
+            fd.writelines([i + '\n' for i in coeff_list])
 
 
 if __name__ == '__main__':
