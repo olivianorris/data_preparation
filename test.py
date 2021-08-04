@@ -18,11 +18,6 @@ from scipy.io import loadmat, savemat
 import argparse
 import os.path as osp
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--data_root', type=str, default='datasets', help='root directory for training data')
-parser.add_argument('--img_folder', nargs="+", required=True, help='folders of training images')
-parser.add_argument('--mode', type=str, default='train', help='train or val')
-prepare_opt = parser.parse_args()
 
 def get_data_path(root='examples'):
     
@@ -176,5 +171,5 @@ def data_summary():
 if __name__ == '__main__':
     train_opt = TrainOptions().parse() #New1
     test_opt = TestOptions().parse()  # get test options
-    main(0, train_opt, test_opt, train_opt.img_folder) #New?
+    main(0, train_opt, test_opt) #New?
     data_summary()
