@@ -52,6 +52,7 @@ def main(rank, train_opt, test_opt, name='examples'):
     model.device = device
     model.parallelize()
     model.eval()
+    model.cuda()#New24
     #visualizer = MyVisualizer(opt)
 
     #im_path, lm_path = get_data_path(name)
