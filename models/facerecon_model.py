@@ -35,29 +35,47 @@ class FaceReconModel(BaseModel):
         parser.add_argument('--z_far', type=float, default=15.)
         parser.add_argument('--net_recog', type=str, default='r50', choices=['r18', 'r43', 'r50'], help='face recog network structure')
         parser.add_argument('--net_recog_path', type=str, default='checkpoints/recog_model/ms1mv3_arcface_r50_fp16/backbone.pth')
+        parser.add_argument('--use_crop_face', type=util.str2bool, nargs='?', const=True, default=False, help='use crop mask for photo loss')
+        parser.add_argument('--use_predef_M', type=util.str2bool, nargs='?', const=True, default=False, help='use predefined M for predicted face')
             
-
-        if is_train:
-            # training parameters
-            parser.add_argument('--use_crop_face', type=util.str2bool, nargs='?', const=True, default=False, help='use crop mask for photo loss')
-            parser.add_argument('--use_predef_M', type=util.str2bool, nargs='?', const=True, default=False, help='use predefined M for predicted face')
+        # augmentation parameters
+        """
+        To prevent suffering from compatiability, all options are used.#New23 """
+        parser.add_argument('--shift_pixs', type=float, default=10., help='shift pixels')
+        parser.add_argument('--scale_delta', type=float, default=0.1, help='delta scale factor')
+        parser.add_argument('--rot_angle', type=float, default=10., help='rot angles, degree')
+        # loss weights
+        parser.add_argument('--w_feat', type=float, default=1.0, help='weight for feat loss')
+        parser.add_argument('--w_color', type=float, default=1.92, help='weight for loss loss')
+        parser.add_argument('--w_reg', type=float, default=3.0e-4, help='weight for reg loss')
+        parser.add_argument('--w_id', type=float, default=0.2, help='weight for id_reg loss')
+        parser.add_argument('--w_exp', type=float, default=0.8, help='weight for exp_reg loss')
+        parser.add_argument('--w_tex', type=float, default=1.7e-2, help='weight for tex_reg loss')
+        parser.add_argument('--w_gamma', type=float, default=10.0, help='weight for gamma loss')
+        parser.add_argument('--w_lm', type=float, default=1.6e-3, help='weight for lm loss')
+        parser.add_argument('--w_reflc', type=float, default=5.0, help='weight for reflc loss')
+        
+        # if is_train:
+        #     # training parameters
+        #     parser.add_argument('--use_crop_face', type=util.str2bool, nargs='?', const=True, default=False, help='use crop mask for photo loss')
+        #     parser.add_argument('--use_predef_M', type=util.str2bool, nargs='?', const=True, default=False, help='use predefined M for predicted face')
 
             
-            # augmentation parameters
-            parser.add_argument('--shift_pixs', type=float, default=10., help='shift pixels')
-            parser.add_argument('--scale_delta', type=float, default=0.1, help='delta scale factor')
-            parser.add_argument('--rot_angle', type=float, default=10., help='rot angles, degree')
+        #     # augmentation parameters
+        #     parser.add_argument('--shift_pixs', type=float, default=10., help='shift pixels')
+        #     parser.add_argument('--scale_delta', type=float, default=0.1, help='delta scale factor')
+        #     parser.add_argument('--rot_angle', type=float, default=10., help='rot angles, degree')
 
-            # loss weights
-            parser.add_argument('--w_feat', type=float, default=1.0, help='weight for feat loss')
-            parser.add_argument('--w_color', type=float, default=1.92, help='weight for loss loss')
-            parser.add_argument('--w_reg', type=float, default=3.0e-4, help='weight for reg loss')
-            parser.add_argument('--w_id', type=float, default=0.2, help='weight for id_reg loss')
-            parser.add_argument('--w_exp', type=float, default=0.8, help='weight for exp_reg loss')
-            parser.add_argument('--w_tex', type=float, default=1.7e-2, help='weight for tex_reg loss')
-            parser.add_argument('--w_gamma', type=float, default=10.0, help='weight for gamma loss')
-            parser.add_argument('--w_lm', type=float, default=1.6e-3, help='weight for lm loss')
-            parser.add_argument('--w_reflc', type=float, default=5.0, help='weight for reflc loss')
+        #     # loss weights
+        #     parser.add_argument('--w_feat', type=float, default=1.0, help='weight for feat loss')
+        #     parser.add_argument('--w_color', type=float, default=1.92, help='weight for loss loss')
+        #     parser.add_argument('--w_reg', type=float, default=3.0e-4, help='weight for reg loss')
+        #     parser.add_argument('--w_id', type=float, default=0.2, help='weight for id_reg loss')
+        #     parser.add_argument('--w_exp', type=float, default=0.8, help='weight for exp_reg loss')
+        #     parser.add_argument('--w_tex', type=float, default=1.7e-2, help='weight for tex_reg loss')
+        #     parser.add_argument('--w_gamma', type=float, default=10.0, help='weight for gamma loss')
+        #     parser.add_argument('--w_lm', type=float, default=1.6e-3, help='weight for lm loss')
+        #     parser.add_argument('--w_reflc', type=float, default=5.0, help='weight for reflc loss')
 
 
 
