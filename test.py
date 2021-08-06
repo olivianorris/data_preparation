@@ -52,7 +52,7 @@ def main(rank, train_opt, test_opt, name='examples'):
     model.device = device
     model.parallelize()
     model.eval()
-    model.to('cuda')
+    #model.to('cuda')#New 撤廃
     #visualizer = MyVisualizer(opt)
 
     #im_path, lm_path = get_data_path(name)

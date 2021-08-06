@@ -107,7 +107,7 @@ class FaceReconModel(BaseModel):
 
         self.net_recon = networks.define_net_recon(
             net_recon=opt.net_recon, use_last_fc=opt.use_last_fc, init_path=opt.init_path
-        )
+        ).cuda()#New CUDA
 
         self.facemodel = ParametricFaceModel(
             bfm_folder=opt.bfm_folder, camera_distance=opt.camera_d, focal=opt.focal, center=opt.center,
@@ -120,7 +120,7 @@ class FaceReconModel(BaseModel):
         )
         self.net_recog = networks.define_net_recog(
                 net_recog=opt.net_recog, pretrained_path=opt.net_recog_path
-                )#New9
+                ).cuda()#New9 .cuda()#New CUDA
 
         if self.isTrain:
             self.loss_names = ['all', 'feat', 'color', 'lm', 'reg', 'gamma', 'reflc']
