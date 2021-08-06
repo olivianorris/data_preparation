@@ -1,6 +1,7 @@
 """This script defines the face reconstruction model for Deep3DFaceRecon_pytorch
 """
 import os.path as osp
+import os
 import numpy as np
 import torch
 from .base_model import BaseModel
@@ -160,7 +161,7 @@ class FaceReconModel(BaseModel):
         AvgPoolの中身を返すようにnet_reconを改造する
         保存のパイプラインとしてselfのアトリビュートとする
         """
-        output_coeff_tosave, avgpool_tosave = self.net_recon(self.input_img)
+        output_coeff, avgpool_tosave = self.net_recon(self.input_img)
         self.facemodel.to(self.device)
         self.pred_vertex, self.pred_tex, self.pred_color, self.pred_lm = \
             self.facemodel.compute_for_render(output_coeff)
@@ -174,7 +175,7 @@ class FaceReconModel(BaseModel):
         if not self.opt.use_predef_M:
             trans_m = estimate_norm_torch(self.pred_lm, self.input_img.shape[-2])
         self.gt_feat_tosave = self.net_recog(self.input_img, self.trans_m)#New12
-        self.output_coeff_tosave = output_coeff_tosave#New12
+        self.output_coeff_tosave = output_coeff#New12
         self.avgpool_tosave = avgpool_tosave
 
 
@@ -270,15 +271,25 @@ class FaceReconModel(BaseModel):
         #New12
         また、この実装はself.image_pathsがデータごとにインデックスを取れるテンソル型であることを前提としている
         """
-        self.output_coeff_tosave = self.output_coeff_tosave.numpy()
-        self.avgpool_tosave = self.avgpool_tosave.numpy()
-        self.gt_feat_tosave = self.gt_feat_tosave.numpy()
-
+        self.output_coeff_tosave = self.output_coeff_tosave.cpu().numpy()
+        self.avgpool_tosave = self.avgpool_tosave.cpu().numpy()
+        self.gt_feat_tosave = self.gt_feat_tosave.cpu().numpy()
+        
         for i, img_path in enumerate(self.image_paths):
-            base_path = img_path.split('.')[:-1][0].split("/")
-            base_path, name = "/".join(base_path[:-1]), base_path[-1]
-            np.savetxt(fname=osp.join(base_path, "gt_feat", name + ".txt"), X=self.gt_feat_tosave[i])
-            np.savetxt(fname=osp.join(base_path, "avgpool", name + ".txt"), X=self.avgpool_tosave[i])
-            np.savetxt(fname=osp.join(base_path, "coeff", name + ".txt"), X=self.output_coeff_tosave[i])
+            base_path = img_path.split('.')[:-1][-1]#fixed
+            a, b = base_path.split('/')[:-1], base_path.split('/')[-1]
+            base_path, name = "/".join(a), b
+            gt_feat_dir = osp.join(base_path, "gt_feat")
+            avgpool_dir = osp.join(base_path, "avgpool")
+            coeff_dir = osp.join(base_path, "coeff")
+            if not osp.isdir(gt_feat_dir):
+                os.makedirs(gt_feat_dir)
+            if not osp.isdir(avgpool_dir):
+                os.makedirs(avgpool_dir)
+            if not osp.isdir(coeff_dir):
+                os.makedirs(coeff_dir)
+            np.savetxt(fname=osp.join(gt_feat_dir, name + ".txt"), X=self.gt_feat_tosave[i])
+            np.savetxt(fname=osp.join(avgpool_dir, name + ".txt"), X=self.avgpool_tosave[i])
+            np.savetxt(fname=osp.join(coeff_dir, name + ".txt"), X=self.output_coeff_tosave[i])
         
 
