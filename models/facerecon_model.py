@@ -288,8 +288,15 @@ class FaceReconModel(BaseModel):
                 os.makedirs(avgpool_dir)
             if not osp.isdir(coeff_dir):
                 os.makedirs(coeff_dir)
-            np.savetxt(fname=osp.join(gt_feat_dir, name + ".txt"), X=self.gt_feat_tosave[i])
-            np.savetxt(fname=osp.join(avgpool_dir, name + ".txt"), X=self.avgpool_tosave[i])
-            np.savetxt(fname=osp.join(coeff_dir, name + ".txt"), X=self.output_coeff_tosave[i])
+
+            gt_feat_path = osp.join(gt_feat_dir, name + ".txt")
+            avgpool_path = osp.join(avgpool_dir, name + ".txt")
+            coeff_path = osp.join(coeff_dir, name + ".txt")
+
+            print("gt_feat_path:", gt_feat_path, "\navgpool_path:", avgpool_path, "\ncoeff_path", coeff_path)
+
+            np.savetxt(fname=gt_feat_path, X=self.gt_feat_tosave[i])
+            np.savetxt(fname=avgpool_path, X=self.avgpool_tosave[i])
+            np.savetxt(fname=coeff_path, X=self.output_coeff_tosave[i])
         
 
