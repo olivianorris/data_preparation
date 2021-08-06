@@ -160,7 +160,7 @@ class FaceReconModel(BaseModel):
         AvgPoolの中身を返すようにnet_reconを改造する
         保存のパイプラインとしてselfのアトリビュートとする
         """
-        output_coeff_tosave, avgpool_tosave = self.net_recon(self.input_img)
+        output_coeff, avgpool_tosave = self.net_recon(self.input_img)
         self.facemodel.to(self.device)
         self.pred_vertex, self.pred_tex, self.pred_color, self.pred_lm = \
             self.facemodel.compute_for_render(output_coeff)
@@ -174,7 +174,7 @@ class FaceReconModel(BaseModel):
         if not self.opt.use_predef_M:
             trans_m = estimate_norm_torch(self.pred_lm, self.input_img.shape[-2])
         self.gt_feat_tosave = self.net_recog(self.input_img, self.trans_m)#New12
-        self.output_coeff_tosave = output_coeff_tosave#New12
+        self.output_coeff_tosave = output_coeff#New12
         self.avgpool_tosave = avgpool_tosave
 
 
