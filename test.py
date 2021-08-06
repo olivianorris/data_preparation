@@ -63,6 +63,9 @@ def main(rank, train_opt, test_opt, name='examples'):
     name_list = ['gt_feat', 'avgpool', 'coeff']
     for i, train_data in enumerate(train_dataset):
         batch_start_time = time.time()
+        if i < 100:
+            print("time form start of",i," th iteration is", time.time()-batch_start_time)
+            
         #img_name = im_path[i].split(os.path.sep)[-1].replace('.png','').replace('.jpg','')
         #if not os.path.isfile(lm_path[i]):
         #    continue
