@@ -278,10 +278,10 @@ class FaceReconModel(BaseModel):
         for i, img_path in enumerate(self.image_paths):
             base_path = img_path.split('.')[:-1][-1]#fixed
             a, b = base_path.split('/')[:-1], base_path.split('/')[-1]
-            base_path, name = "/".join(a), b
-            gt_feat_dir = osp.join(".", base_path, "gt_feat")
-            avgpool_dir = osp.join(".", base_path, "avgpool")
-            coeff_dir = osp.join(".", base_path, "coeff")
+            base_path, name = "/".join(a)[1:], b
+            gt_feat_dir = osp.join(base_path, "gt_feat")
+            avgpool_dir = osp.join(base_path, "avgpool")
+            coeff_dir = osp.join(base_path, "coeff")
             
             if not osp.isdir(gt_feat_dir):
                 print("aaa")
