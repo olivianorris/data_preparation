@@ -272,17 +272,19 @@ class FaceReconModel(BaseModel):
         また、この実装はself.image_pathsがデータごとにインデックスを取れるテンソル型であることを前提としている
         """
         self.output_coeff_tosave = self.output_coeff_tosave.cpu().numpy()
-        self.avgpool_tosave = self.avgpool_tosave.cpu().numpy()
+        self.avgpool_tosave = np.squeeze(self.avgpool_tosave.cpu().numpy())
         self.gt_feat_tosave = self.gt_feat_tosave.cpu().numpy()
         
         for i, img_path in enumerate(self.image_paths):
             base_path = img_path.split('.')[:-1][-1]#fixed
             a, b = base_path.split('/')[:-1], base_path.split('/')[-1]
             base_path, name = "/".join(a), b
-            gt_feat_dir = osp.join(base_path, "gt_feat")
-            avgpool_dir = osp.join(base_path, "avgpool")
-            coeff_dir = osp.join(base_path, "coeff")
+            gt_feat_dir = osp.join(".", base_path, "gt_feat")
+            avgpool_dir = osp.join(".", base_path, "avgpool")
+            coeff_dir = osp.join(".", base_path, "coeff")
+            
             if not osp.isdir(gt_feat_dir):
+                print("aaa")
                 os.makedirs(gt_feat_dir)
             if not osp.isdir(avgpool_dir):
                 os.makedirs(avgpool_dir)
@@ -293,7 +295,7 @@ class FaceReconModel(BaseModel):
             avgpool_path = osp.join(avgpool_dir, name + ".txt")
             coeff_path = osp.join(coeff_dir, name + ".txt")
 
-            print("gt_feat_path:", gt_feat_path, "\navgpool_path:", avgpool_path, "\ncoeff_path", coeff_path)
+            print("gt_feat_path:", gt_feat_path, "\navgpool_path:", avgpool_path, "\ncoeff_path:", coeff_path)
 
             np.savetxt(fname=gt_feat_path, X=self.gt_feat_tosave[i])
             np.savetxt(fname=avgpool_path, X=self.avgpool_tosave[i])
