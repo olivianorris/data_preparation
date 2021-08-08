@@ -110,7 +110,8 @@ def data_summary():
         for line in rf.readlines():
             impath = line.strip()
             imlist.append(impath)
-    msk_paths = [os.path.join("./", i) for i in imlist]
+    msk_paths = imlist
+    #msk_paths = [os.path.join("./", i) for i in imlist]
     img_path = [msk_path.replace('mask/', '') for msk_path in msk_paths]
     lm_path = ['.'.join(msk_path.replace('mask', 'landmarks').split('.')[:-1]) + '.txt' for msk_path in msk_paths]
     gt_feat_path = [t.replace('landmarks','gt_feat') for t in lm_path]
@@ -118,9 +119,9 @@ def data_summary():
     coeff_path = [t.replace('landmarks','coeff_feat') for t in lm_path]
 
     lms_list, imgs_list, msks_list, gt_feat_list, avgpool_list,\
-         coeff_list = check_list(msk_paths, img_path, lm_path, gt_feat_path, avgpool_path, coeff_path)
+        coeff_list = check_list(msk_paths, img_path, lm_path, gt_feat_path, avgpool_path, coeff_path)
     
-    write_list(lms_list, imgs_list, msks_list, gt_feat_list, 
+    write_list(lm_path, imgs_list, msks_list, gt_feat_list, 
     avgpool_list, coeff_list, mode='train', save_folder='datalist', save_name='')
     
     # check if the path is valid
