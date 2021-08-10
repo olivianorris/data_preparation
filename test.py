@@ -77,7 +77,7 @@ def main(rank, train_opt, test_opt, name='examples'):
         """
         set_inputでの入力に対して、適切な位置にフォルダがあればパスすることで、保存する(適当にサンプリングして時間を短縮する)
         """
-        # model.set_input(train_data)  # unpack data from data loader #
+        model.set_input(train_data)  # unpack data from data loader #
         # test_str =  model.image_paths[12]
 
         # test_dir = pathlib.Path(test_str).parent
