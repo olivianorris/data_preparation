@@ -120,7 +120,7 @@ def data_summary():
     lm_path = ['.'.join(msk_path.replace('mask', 'landmarks').split('.')[:-1]) + '.txt' for msk_path in msk_paths]
     gt_feat_path = [t.replace('landmarks','gt_feat') for t in lm_path]
     avgpool_path = [t.replace('landmarks','avgpool') for t in lm_path]
-    coeff_path = [t.replace('landmarks','coeff_feat') for t in lm_path]
+    coeff_path = [t.replace('landmarks','coeff') for t in lm_path]
 
     #lms_list, imgs_list, msks_list, gt_feat_list, avgpool_list,\
     #    coeff_list = check_list(msk_paths, img_path, lm_path, gt_feat_path, avgpool_path, coeff_path)
