@@ -78,18 +78,22 @@ def main(rank, train_opt, test_opt, name='examples'):
         set_inputでの入力に対して、適切な位置にフォルダがあればパスすることで、保存する(適当にサンプリングして時間を短縮する)
         """
         model.set_input(train_data)  # unpack data from data loader #
-        test_str =  model.image_paths[12]
+        # test_str =  model.image_paths[12]
 
-        test_dir = pathlib.Path(test_str).parent
-        name = test_str.split('.')[:-1][0].split("/")[-1]
+        # test_dir = pathlib.Path(test_str).parent
+        # name = test_str.split('.')[:-1][0].split("/")[-1]
         
-        test_list = [osp.join(str(test_dir), i, name + '.txt') for i in name_list]
-        if i == 1:
-            print("test_list: ",test_list)
-        if os.path.isfile(test_list[0]) and os.path.isfile(test_list[1]) and os.path.isfile(test_list[2]):
-                pass
-        else:
-            model.test()           # run inference
+        # test_list = [osp.join(str(test_dir), i, name + '.txt') for i in name_list]
+        # if i == 1:
+        #     print("test_list: ",test_list)
+        # #if os.path.isfile(test_list[0]) and os.path.isfile(test_list[1]) and os.path.isfile(test_list[2]):
+        #         pass
+        #else:
+        """
+        スキップ機能はflist_dataset.pyの__init__データローダで代替される
+        そもそものパスのリストから削除するようにした
+        """
+        model.test()           # run inference
         #visuals = model.get_current_visuals()  # get image results
         #visualizer.display_current_results(visuals, 0, opt.epoch, dataset=name.split(os.path.sep)[-1], 
         #    save_results=True, count=i, name=img_name, add_image=False)
@@ -101,7 +105,7 @@ def main(rank, train_opt, test_opt, name='examples'):
             spent_time_amount = time.time()- preprocess_start_time
             print("@th iteration finished in * s".replace("@",i).replace("*",spent_time_per_batch))
             print("\n@ image has been processed".replace("@",train_opt.batch_size*i))
-            print("\nelapsed time from start: @".replace("@",spent_time_amout))
+            print("\nelapsed time from start: @".replace("@",spent_time_amount))
 
 def data_summary():
     masks_path = 'datalist/train/masks.txt'
@@ -118,11 +122,11 @@ def data_summary():
     avgpool_path = [t.replace('landmarks','avgpool') for t in lm_path]
     coeff_path = [t.replace('landmarks','coeff_feat') for t in lm_path]
 
-    lms_list, imgs_list, msks_list, gt_feat_list, avgpool_list,\
-        coeff_list = check_list(msk_paths, img_path, lm_path, gt_feat_path, avgpool_path, coeff_path)
+    #lms_list, imgs_list, msks_list, gt_feat_list, avgpool_list,\
+    #    coeff_list = check_list(msk_paths, img_path, lm_path, gt_feat_path, avgpool_path, coeff_path)
     
-    write_list(lm_path, imgs_list, msks_list, gt_feat_list, 
-    avgpool_list, coeff_list, mode='train', save_folder='datalist', save_name='')
+    write_list(lm_path, img_path, msk_paths, gt_feat_path, 
+    avgpool_path, coeff_path, mode='train', save_folder='datalist', save_name='')
     
     # check if the path is valid
 def check_list(rmsks_list, rimgs_list, rlms_list, rgt_feat_list, ravgpool_list, rcoeff_list):
@@ -153,14 +157,6 @@ avgpool_list, coeff_list, mode='train',save_folder='datalist', save_name=''
     save_path = os.path.join(save_folder, mode)
     if not os.path.isdir(save_path):
         os.makedirs(save_path)
-    with open(os.path.join(save_path, save_name + 'landmarks.txt'), 'w') as fd:
-        fd.writelines([i + '\n' for i in lms_list])
-
-    with open(os.path.join(save_path, save_name + 'images.txt'), 'w') as fd:
-        fd.writelines([i + '\n' for i in imgs_list])
-    
-    with open(os.path.join(save_path, save_name + 'masks.txt'), 'w') as fd:
-        fd.writelines([i + '\n' for i in msks_list])   
 
     with open(os.path.join(save_path, save_name + 'gt_feat.txt'), 'w') as fd:
         fd.writelines([i + '\n' for i in gt_feat_list])   

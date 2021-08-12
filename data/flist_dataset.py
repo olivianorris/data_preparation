@@ -56,6 +56,19 @@ class FlistDataset(BaseDataset):
         msk_names = default_flist_reader(opt.flist)
         self.msk_paths = [os.path.join(opt.data_root, i) for i in msk_names]
 
+        """
+        remove already processed data from dataset
+        """
+        import copy
+        new_msk_paths = copy.copy(self.msk_paths)
+        for path in self.msk_paths:
+            coeff_path = '.'.join(path.replace('mask', 'coeff').split('.')[:-1]) + '.txt'
+            if os.path.exists(coeff_path):
+                print(path)
+                new_msk_paths.remove(path)
+
+        self.msk_paths = new_msk_paths
+
         self.size = len(self.msk_paths) 
         self.opt = opt
         
